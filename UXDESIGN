@@ -1,0 +1,52 @@
+User Experience Design for Gala Manager
+
+A.  Guest page
+
+Guest page or tab has a data table with guests.  Columns include bidder number,
+name, host, contact info, payment method, whether checked in, pledged amount,
+paid amount, and a flag showing special request info.  The table may be sorted
+by bidder number, name, or host.  When sorted by name, seats without a name are
+sorted immediately after the host.  When sorted by host, the host's row is
+first, followed by other rows with names in name order, followed by rows with no
+name.  When sorted by bidder number, rows with the same bidder number are
+further sorted by name.  The table is searchable; numeric search terms filter on
+the bidder number and non-numeric search terms filter on either the name or the
+host.
+
+From this page, one can:
+  - Edit any of the information about a guest (except pledged/paid amounts).
+  - Add a new guest.
+  - Remove a guest (if they have made no purchases).
+  - Check in a guest or a set of guests.
+  - Generate program labels
+  - Generate check in forms
+  - Export as CSV?
+
+B.  Item page
+
+The item page (or tab) has a data table with purchasable items (or donation
+levels).  Columns include title, charge amount (could be "auction"), and value.
+The table is always sorted by title.  The table is searchable, filtering on the
+title.
+
+From this page, one can:
+  - Edit any of the information about an item.
+  - Add an item.
+  - Remove an item (if there are no purchases of it).
+  - Enter or remove pledges or winning bids for an item.
+
+C.  Charges page
+
+The charges page (or tab) has a grouped data table, with one group for each
+payer, and one row in that group for each purchase to be paid by that payer.
+The columns include item title, guest (if not same as payer), charge amount,
+payment menthod, and whether or not paid.  Each row can expand to show the list
+of payments and refunds associated with that purchase.
+
+From this page, one can:
+  - Revoke a pledge for an item, removing that purchase line (if not paid).
+  - Change the payment method for a line.
+  - Charge or refund a line, if its payment method is card-on-file.
+  - Mark a purchase paid by a non-card method.
+  - Charge all of the card payments in a group.
+  - Generate a receipt for a group.
