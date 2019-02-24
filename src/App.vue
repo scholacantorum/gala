@@ -56,7 +56,7 @@ export default {
   },
   data() {
     return {
-      tab: 'tables',
+      tab: 'guests',
     }
   },
   computed: {

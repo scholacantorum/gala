@@ -7,6 +7,7 @@ div(:class="$style.top")
   v-data-table(
     :class="$style.table"
     :custom-filter="filter"
+    :custom-sort="sort"
     :headers="headers"
     :items="payers"
     :pagination="pagination"
@@ -49,7 +50,7 @@ export default {
         {
           text: '',
           value: 'icons',
-          sortable: false,
+          sortable: true,
           class: this.$style.iconsTH,
         },
         {
@@ -97,6 +98,47 @@ export default {
       return payers.filter(p =>
         bidder ? p.bidder === bidder : p.name.toLowerCase().includes(search)
       )
+    },
+    sort(payers, column, desc) {
+      let sorted
+      switch (column) {
+        case 'icons':
+          sorted = payers.sort((a, b) => {
+            if (a.allPaid && !b.allPaid) return +1
+            if (!a.allPaid && b.allPaid) return -1
+            if (!a.allPaid && a.useCard && !b.useCard) return +1
+            if (!a.allPaid && !a.useCard && b.useCard) return -1
+            return a.sortname < b.sortname
+              ? -1
+              : a.sortname > b.sortname
+              ? +1
+              : 0
+          })
+          break
+        case 'bidder':
+          sorted = payers.sort((a, b) => {
+            if (a.bidder && !b.bidder) return -1
+            if (!a.bidder && b.bidder) return +1
+            if (a.bidder && a.bidder !== b.bidder) return a.bidder - b.bidder
+            return a.sortname < b.sortname
+              ? -1
+              : a.sortname > b.sortname
+              ? +1
+              : 0
+          })
+          break
+        case 'sortname':
+          sorted = payers.sort((a, b) => {
+            return a.sortname < b.sortname
+              ? -1
+              : a.sortname > b.sortname
+              ? +1
+              : 0
+          })
+          break
+      }
+      if (desc) sorted = sorted.reverse()
+      return sorted
     },
   },
 }

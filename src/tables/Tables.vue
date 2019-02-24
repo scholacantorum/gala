@@ -122,11 +122,10 @@ export default {
       this.dropTableInner(evt, table, offsetX, offsetY)
     },
     dropTableInner(evt, table, offsetX, offsetY) {
-      this.$store.dispatch('saveTable', {
-        id: table.id,
-        x: Math.max(0, evt.clientX - offsetX),
-        y: Math.max(0, evt.clientY - offsetY),
-      })
+      table = Object.assign({}, table)
+      table.x = Math.max(0, evt.clientX - offsetX)
+      table.y = Math.max(0, evt.clientY - offsetY)
+      this.$store.dispatch('saveTable', table)
     },
     dropTableNumber(evt) {
       const tablenum = parseInt(evt.dataTransfer.getData('tablenum'))

@@ -53,6 +53,7 @@ export default {
         toplace.push(region)
       }
     })
+    if (!toplace.length) return
     toplace = toplace.sort((a, b) => {
       const ap = this.$store.state.parties[a.t.parties[0]]
       const bp = this.$store.state.parties[b.t.parties[0]]

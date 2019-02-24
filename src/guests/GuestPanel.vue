@@ -299,7 +299,8 @@ export default {
         return true
       for (let i = 0; i < this.original.payingFor.length; i++)
         if (this.original.payingFor[i] !== this.edited.payingFor[i]) return true
-      if (this.original.useCard && this.paymentMethod !== 'saved') return true
+      if (this.original.useCard !== (this.paymentMethod === 'saved'))
+        return true
       if (this.paymentMethod === 'new') return true
       return false
     },

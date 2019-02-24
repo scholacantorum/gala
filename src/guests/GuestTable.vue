@@ -7,6 +7,7 @@ div(:class="$style.top")
   v-data-table(
     :class="$style.table"
     :custom-filter="filter"
+    :custom-sort="sort"
     :headers="headers"
     :items="guests"
     :pagination="pagination"
@@ -89,6 +90,35 @@ export default {
       return guests.filter(g =>
         bidder ? g.bidder === bidder : g.name.toLowerCase().includes(search)
       )
+    },
+    sort(guests, column, desc) {
+      console.log(guests, column, desc)
+      let sorted
+      switch (column) {
+        case 'bidder':
+          sorted = guests.sort((a, b) => {
+            if (a.bidder && !b.bidder) return -1
+            if (!a.bidder && b.bidder) return +1
+            if (a.bidder && a.bidder !== b.bidder) return a.bidder - b.bidder
+            return a.sortname < b.sortname
+              ? -1
+              : a.sortname > b.sortname
+              ? +1
+              : 0
+          })
+          break
+        case 'sortname':
+          sorted = guests.sort((a, b) => {
+            return a.sortname < b.sortname
+              ? -1
+              : a.sortname > b.sortname
+              ? +1
+              : 0
+          })
+          break
+      }
+      if (desc) sorted = sorted.reverse()
+      return sorted
     },
   },
 }
