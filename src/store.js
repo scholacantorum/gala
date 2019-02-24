@@ -94,7 +94,7 @@ const store = new Vuex.Store({
       }
       ws.onclose = () => {
         console.error('web socket closed')
-        commit('setState', 'failed')
+        commit('setState', 'disconnected')
       }
       ws.onmessage = evt => {
         try {

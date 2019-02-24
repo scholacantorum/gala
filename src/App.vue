@@ -14,6 +14,7 @@
     v-content(:class="$style.content")
       keep-alive(exclude="Tables")
         Connecting(v-if="state === 'connecting'")
+        Disconnected(v-else-if="state === 'disconnected'")
         Failure(v-else-if="state === 'failed'")
         Login(v-else-if="state === 'notLoggedIn'")
         Guests(v-else-if="tab === 'guests'")
@@ -21,19 +22,11 @@
         Items(v-else-if="tab === 'items'")
         Purchases(v-else-if="tab === 'purchases'")
         Payments(v-else-if="tab === 'payments'")
-      // v-tabs-items(v-else v-model="tab" :class="$style.fullHeightTabs")
-        v-tab-item(value="guests" :class="$style.fullHeightTabs")
-          Guests
-        v-tab-item(value="items" :class="$style.fullHeightTabs")
-          Items
-        v-tab-item(value="purchases" :class="$style.fullHeightTabs")
-          Purchases
-        v-tab-item(value="payments" :class="$style.fullHeightTabs")
-          Payments
 </template>
 
 <script>
 import Connecting from './Connecting'
+import Disconnected from './Disconnected'
 import Failure from './Failure'
 import Guests from './guests/Guests'
 import Items from './items/Items'
@@ -46,6 +39,7 @@ export default {
   name: 'App',
   components: {
     Connecting,
+    Disconnected,
     Failure,
     Guests,
     Items,
