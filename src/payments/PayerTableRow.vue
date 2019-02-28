@@ -22,7 +22,7 @@ tr(
     ) warning
   td(
     :class="$style.bidder"
-    v-text="payer.bidder || ''"
+    v-text="bidder"
   )
   td(
     :class="$style.payer"
@@ -36,6 +36,12 @@ export default {
   props: {
     payer: { type: Object, required: true },
     selected: { type: Boolean, required: true },
+  },
+  computed: {
+    bidder() {
+      if (!this.payer.bidder) return ''
+      return this.payer.bidder.toString(16).toUpperCase()
+    },
   },
 }
 </script>

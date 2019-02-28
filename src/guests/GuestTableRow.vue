@@ -11,7 +11,7 @@ tr(
 )
   td(
     :class="$style.bidder"
-    v-text="guest.bidder || ''"
+    v-text="bidder"
   )
   td(
     :class="$style.guest"
@@ -27,6 +27,10 @@ export default {
     selected: { type: Boolean, required: true },
   },
   computed: {
+    bidder() {
+      if (!this.guest.bidder) return ''
+      return this.guest.bidder.toString(16).toUpperCase()
+    },
     draggable() {
       return !this.selected
     },

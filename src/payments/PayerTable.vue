@@ -68,8 +68,14 @@ export default {
       ]
     },
     payers() {
-      const bidder = parseInt(this.search)
-      if (!isNaN(bidder) && bidder > 0)
+      const bidder = parseInt(this.search, 16)
+      if (
+        this.search &&
+        this.search[0] >= '0' &&
+        this.search[0] <= '9' &&
+        !isNaN(bidder) &&
+        bidder > 0
+      )
         return this.allPayers.filter(p => p.bidder === bidder)
       const search = this.search.toLowerCase()
       return this.allPayers.filter(p => p.name.toLowerCase().includes(search))
@@ -92,8 +98,15 @@ export default {
   },
   methods: {
     filter(payers, search) {
-      let bidder = parseInt(search)
-      if (isNaN(bidder) || bidder < 1) bidder = null
+      let bidder = parseInt(search, 16)
+      if (
+        !search ||
+        search[0] < '0' ||
+        search[0] > '9' ||
+        isNaN(bidder) ||
+        bidder < 1
+      )
+        bidder = null
       search = search.toLowerCase()
       return payers.filter(p =>
         bidder ? p.bidder === bidder : p.name.toLowerCase().includes(search)

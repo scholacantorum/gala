@@ -16,33 +16,9 @@ div(
 <script>
 export default {
   name: 'TableGuest',
-  // parent: ,
-  // functional: true,
-  // components: {},
-  // filters: {},
-  // extends: ,
-  // mixins: [],
-  // inheritAttrs: false,
-  // model: { prop: '', event: '' },
   props: {
     guest: { type: Object, required: true },
   },
-  // data: () => ({}),
-  // computed: {},
-  // watch: {},
-  // beforeCreate() {},
-  // created() {},
-  // beforeMount() {},
-  // mounted() {},
-  // beforeRouteUpdate(to, from, next) {},
-  // beforeUpdate() {},
-  // updated() {},
-  // activated() {},
-  // beforeRouteEnter(to, from, next) {},
-  // beforeRouteLeave(to, from, next) {},
-  // deactivated() {},
-  // beforeDestroy() {},
-  // destroyed() {},
   methods: {
     dragStart(evt) {
       evt.dataTransfer.setData('guestid', this.guest.id)

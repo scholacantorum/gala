@@ -43,10 +43,10 @@ export default {
   computed: {
     bidderLabel() {
       if (!this.bidder) return null
-      if (!this.bidder.bidder) return `\u2007\u2007 ${this.bidder.name}`
-      if (this.bidder.bidder < 10)
-        return `\u2007${this.bidder.bidder} ${this.bidder.name}`
-      else return `${this.bidder.bidder} ${this.bidder.name}`
+      let b = this.bidder.bidder.toString(16).toUpperCase()
+      if (b === '0') b = '\u2007\u2007\u2007'
+      while (b.length < 3) b = `\u2007${b}`
+      return `${b} ${this.bidder.name}`
     },
     sequence() {
       return this.$store.state.sequence

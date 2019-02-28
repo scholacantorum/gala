@@ -23,37 +23,16 @@ import TableGuest from './TableGuest'
 
 export default {
   name: 'TableParty',
-  // parent: ,
-  // functional: true,
   components: { TableGuest },
-  // filters: {},
-  // extends: ,
-  // mixins: [],
-  // inheritAttrs: false,
-  // model: { prop: '', event: '' },
   props: {
     party: { type: Object, required: true },
   },
   data: () => ({
     guests: [],
   }),
-  // computed: {},
   watch: {
     '$store.state.sequence': { immediate: true, handler: 'reset' },
   },
-  // beforeCreate() {},
-  // created() {},
-  // beforeMount() {},
-  // mounted() {},
-  // beforeRouteUpdate(to, from, next) {},
-  // beforeUpdate() {},
-  // updated() {},
-  // activated() {},
-  // beforeRouteEnter(to, from, next) {},
-  // beforeRouteLeave(to, from, next) {},
-  // deactivated() {},
-  // beforeDestroy() {},
-  // destroyed() {},
   methods: {
     dragOver(evt) {
       if (evt.dataTransfer.types.includes('guestid')) {

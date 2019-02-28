@@ -34,14 +34,7 @@ import TableParty from './TableParty'
 
 export default {
   name: 'Table',
-  // parent: ,
-  // functional: true,
   components: { TableNumber, TableParty },
-  // filters: {},
-  // extends: ,
-  // mixins: [],
-  // inheritAttrs: false,
-  // model: { prop: '', event: '' },
   props: {
     table: { type: Object, required: true },
   },
@@ -60,19 +53,6 @@ export default {
   watch: {
     '$store.state.sequence': { immediate: true, handler: 'reset' },
   },
-  // beforeCreate() {},
-  // created() {},
-  // beforeMount() {},
-  // mounted() {},
-  // beforeRouteUpdate(to, from, next) {},
-  // beforeUpdate() {},
-  // updated() {},
-  // activated() {},
-  // beforeRouteEnter(to, from, next) {},
-  // beforeRouteLeave(to, from, next) {},
-  // deactivated() {},
-  // beforeDestroy() {},
-  // destroyed() {},
   methods: {
     dragOver(evt) {
       if (

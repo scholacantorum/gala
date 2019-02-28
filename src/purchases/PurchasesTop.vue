@@ -23,9 +23,8 @@ v-card.px-3
       ref="bidder"
       :class="$style.bidder"
       :error="!!bidderErrors.length"
-      :value="bidder||''"
+      :value="bidderNum"
       label="Bidder"
-      mask="###"
       @input="setBidder"
       @keyup.enter="addPurchase"
     )
@@ -66,6 +65,9 @@ export default {
   computed: {
     bidderName() {
       return this.bidderGuest ? this.bidderGuest.name : ''
+    },
+    bidderNum() {
+      return this.bidder ? this.bidder.toString(16).toUpperCase() : ''
     },
     bidderErrors() {
       if (!this.bidder || this.bidderGuest) return []
@@ -133,7 +135,7 @@ export default {
       else this.amount = n * 100
     },
     setBidder(t) {
-      const n = parseInt(t)
+      const n = parseInt(t, 16)
       if (isNaN(n) || n < 1) this.bidder = 0
       else this.bidder = n
     },

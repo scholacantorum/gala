@@ -63,8 +63,14 @@ export default {
     },
     guests() {
       const search = (this.search || '').toLowerCase()
-      const bidder = parseInt(search)
-      if (!isNaN(bidder) && bidder > 0)
+      const bidder = parseInt(search, 16)
+      if (
+        search &&
+        search[0] >= '0' &&
+        search[0] <= '9' &&
+        !isNaN(bidder) &&
+        bidder > 0
+      )
         return this.allGuests.filter(g => g.bidder === bidder)
       return this.allGuests.filter(g => g.name.toLowerCase().includes(search))
     },
@@ -84,15 +90,21 @@ export default {
   },
   methods: {
     filter(guests, search) {
-      let bidder = parseInt(search)
-      if (isNaN(bidder) || bidder < 1) bidder = null
+      let bidder = parseInt(search, 16)
+      if (
+        !search ||
+        search[0] < '0' ||
+        search[0] > '9' ||
+        isNaN(bidder) ||
+        bidder < 1
+      )
+        bidder = null
       search = search.toLowerCase()
       return guests.filter(g =>
         bidder ? g.bidder === bidder : g.name.toLowerCase().includes(search)
       )
     },
     sort(guests, column, desc) {
-      console.log(guests, column, desc)
       let sorted
       switch (column) {
         case 'bidder':
@@ -103,8 +115,8 @@ export default {
             return a.sortname < b.sortname
               ? -1
               : a.sortname > b.sortname
-              ? +1
-              : 0
+                ? +1
+                : 0
           })
           break
         case 'sortname':
@@ -112,8 +124,8 @@ export default {
             return a.sortname < b.sortname
               ? -1
               : a.sortname > b.sortname
-              ? +1
-              : 0
+                ? +1
+                : 0
           })
           break
       }

@@ -74,7 +74,6 @@ export default {
       if (evt.dataTransfer.types.includes('tablenum')) this.dropTableNumber(evt)
     },
     dropGuest(evt) {
-      console.log('tables drop guest')
       const guestID = parseInt(evt.dataTransfer.getData('guestid'))
       const offsetX = parseInt(evt.dataTransfer.getData('offsetX'))
       const offsetY = parseInt(evt.dataTransfer.getData('offsetY'))

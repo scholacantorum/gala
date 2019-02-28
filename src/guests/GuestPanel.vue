@@ -22,9 +22,8 @@ v-card(:class="$style.top")
         v-spacer
         v-text-field(
           :class="$style.bidder"
-          :value="edited.bidder||''"
+          :value="bidder"
           label="Bidder"
-          mask="###"
           tabindex="-1"
           @input="setBidder"
         )
@@ -282,6 +281,10 @@ export default {
         },
       ]
     },
+    bidder() {
+      if (!this.edited.bidder) return ''
+      return this.edited.bidder.toString(16).toUpperCase()
+    },
     dirty() {
       if (!this.original) return true
       if (this.original.name !== this.edited.name) return true
@@ -400,7 +403,7 @@ export default {
         : ''
     },
     setBidder(b) {
-      const bidder = parseInt(b)
+      const bidder = parseInt(b, 16)
       this.edited.bidder = !isNaN(bidder) && bidder > 0 ? bidder : 0
     },
     setCardValid(v) {

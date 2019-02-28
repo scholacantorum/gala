@@ -5,7 +5,7 @@ PurchaseRow displays one row in the purchase table.
 <template lang="pug">
 tr(:class="$style.top")
   td(:class="$style.item" v-text="itemName")
-  td(:class="$style.bidder" v-text="guest.bidder")
+  td(:class="$style.bidder" v-text="bidder")
   td(:class="$style.name" v-text="guest.name")
   td(:class="$style.amount" v-text="purchase.amount/100")
   td(:class="$style.payer" v-text="payerName")
@@ -49,6 +49,10 @@ export default {
     purchase: 'reset',
   },
   computed: {
+    bidder() {
+      if (!this.guest.bidder) return ''
+      return this.guest.bidder.toString(16).toUpperCase()
+    },
     paymentIcon() {
       if (this.purchase.paymentTimestamp) return ['green', 'check_circle']
       if (this.purchase.haveCard) return ['white', 'access_time']
@@ -60,7 +64,7 @@ export default {
       if (
         await this.$confirm(
           `Are you sure you want to delete the purchase of ${
-            this.itemName
+          this.itemName
           } by ${this.guest.name}?`
         )
       )
