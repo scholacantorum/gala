@@ -31,6 +31,20 @@ export default {
     includePaid: true,
     selected: [],
   }),
+  watch: {
+    '$store.state.sequence': 'reset',
+    payer: {
+      immediate: true,
+      handler: 'reset',
+    },
+  },
+  methods: {
+    reset() {
+      this.includePaid = this.payer.payingForPurchases.every(
+        pid => !!this.$store.state.purchases[pid].paymentTimestamp
+      )
+    },
+  },
 }
 </script>
 
