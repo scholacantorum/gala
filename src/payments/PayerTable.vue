@@ -37,7 +37,7 @@ export default {
   data: () => ({
     allPayers: [],
     pagination: {
-      sortBy: 'sortname',
+      sortBy: 'icons',
       descending: false,
       page: 1,
       rowsPerPage: 1000,
