@@ -14,64 +14,35 @@ div(
     :key="table.id"
     :table="table"
   )
-  TableNumber(
-    :number="nextTableNumber"
-    :attached="false"
-  )
 </template>
 
 <script>
 import Table from './Table'
-import TableNumber from './TableNumber'
 import autolayout from './autolayout'
 
 export default {
   name: 'Tables',
-  // parent: ,
-  // functional: true,
-  components: { Table, TableNumber },
-  // filters: {},
-  // extends: ,
+  components: { Table },
   mixins: [autolayout],
-  // inheritAttrs: false,
-  // model: { prop: '', event: '' },
-  // props: {},
   data: () => ({
-    nextTableNumber: 0,
     tables: [],
   }),
-  // computed: {},
   watch: {
     '$store.state.sequence': {
       immediate: true,
       handler: 'reset',
     },
   },
-  // beforeCreate() {},
-  // created() {},
-  // beforeMount() {},
-  // mounted() {},
-  // beforeRouteUpdate(to, from, next) {},
-  // beforeUpdate() {},
-  // updated() {},
-  // activated() {},
-  // beforeRouteEnter(to, from, next) {},
-  // beforeRouteLeave(to, from, next) {},
-  // deactivated() {},
-  // beforeDestroy() {},
-  // destroyed() {},
   methods: {
     dragOver(evt) {
       if (evt.dataTransfer.types.includes('tableid')) evt.preventDefault()
       if (evt.dataTransfer.types.includes('partyid')) evt.preventDefault()
       if (evt.dataTransfer.types.includes('guestid')) evt.preventDefault()
-      if (evt.dataTransfer.types.includes('tablenum')) evt.preventDefault()
     },
     drop(evt) {
       if (evt.dataTransfer.types.includes('tableid')) this.dropTable(evt)
       if (evt.dataTransfer.types.includes('partyid')) this.dropParty(evt)
       if (evt.dataTransfer.types.includes('guestid')) this.dropGuest(evt)
-      if (evt.dataTransfer.types.includes('tablenum')) this.dropTableNumber(evt)
     },
     dropGuest(evt) {
       const guestID = parseInt(evt.dataTransfer.getData('guestid'))
@@ -126,19 +97,8 @@ export default {
       table.y = Math.max(0, evt.clientY - offsetY)
       this.$store.dispatch('saveTable', table)
     },
-    dropTableNumber(evt) {
-      const tablenum = parseInt(evt.dataTransfer.getData('tablenum'))
-      let table = this.tables.find(t => t.number === tablenum)
-      if (!table) return
-      table = Object.assign({}, table)
-      table.number = 0
-      this.$store.dispatch('saveTable', table)
-    },
     reset() {
       this.tables = Object.values(this.$store.state.tables)
-      let n
-      for (n = 1; ; n++) if (!this.tables.some(t => t.number === n)) break
-      this.nextTableNumber = n
     },
   },
 }

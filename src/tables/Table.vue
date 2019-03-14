@@ -15,30 +15,47 @@ div(
     draggable
     @dragstart="dragStart"
   )
+    div(:class="$style.number" v-text="table.number || ''")
+    div(:class="$style.name" v-text="table.name")
+    v-dialog(v-model="editDialog" persistent max-width="620")
+      template(v-slot:activator="{ on }")
+        v-icon(:class="$style.edit" v-on="on") edit
+      v-card(:class="$style.dialog")
+        v-text-field.mx-2(
+          v-if="editDialog"
+          :class="$style.ednum"
+          :value="table.number || ''"
+          autofocus mask="##" label="Number"
+          @input="table.number = parseInt($event) || 0"
+          @keyup.enter="$refs.edname.focus()"
+        )
+        v-text-field(
+          ref="edname"
+          v-model="table.name"
+          :class="$style.edname"
+          label="Name"
+          @keyup.enter="save"
+        )
+        v-btn(color="indigo" dark @click="save") OK
   div(:class="$style.parties")
     TableParty(
       v-for="party in parties"
       :key="party.id"
       :party="party"
     )
-  TableNumber(
-    v-if="table.number"
-    :number="table.number"
-    attached
-  )
 </template>
 
 <script>
-import TableNumber from './TableNumber'
 import TableParty from './TableParty'
 
 export default {
   name: 'Table',
-  components: { TableNumber, TableParty },
+  components: { TableParty },
   props: {
     table: { type: Object, required: true },
   },
   data: () => ({
+    editDialog: false,
     overloaded: false,
     parties: [],
   }),
@@ -58,8 +75,7 @@ export default {
       if (
         evt.dataTransfer.types.includes('tableid') ||
         evt.dataTransfer.types.includes('partyid') ||
-        evt.dataTransfer.types.includes('guestid') ||
-        evt.dataTransfer.types.includes('tablenum')
+        evt.dataTransfer.types.includes('guestid')
       ) {
         evt.preventDefault()
         evt.stopPropagation()
@@ -76,15 +92,14 @@ export default {
       evt.dataTransfer.dropEffect = 'move'
       evt.dataTransfer.setDragImage(
         this.$refs.top,
-        evt.offsetX + 2,
-        evt.offsetY + 2
+        evt.offsetX + 4,
+        evt.offsetY + 4
       )
     },
     drop(evt) {
       if (evt.dataTransfer.types.includes('tableid')) this.dropTable(evt)
       if (evt.dataTransfer.types.includes('partyid')) this.dropParty(evt)
       if (evt.dataTransfer.types.includes('guestid')) this.dropGuest(evt)
-      if (evt.dataTransfer.types.includes('tablenum')) this.dropTableNumber(evt)
     },
     dropGuest(evt) {
       const guestID = parseInt(evt.dataTransfer.getData('guestid'))
@@ -127,20 +142,16 @@ export default {
       evt.preventDefault()
       evt.stopPropagation()
     },
-    dropTableNumber(evt) {
-      const tablenum = parseInt(evt.dataTransfer.getData('tablenum'))
-      const table = Object.assign({}, this.table)
-      table.number = tablenum
-      this.$store.dispatch('saveTable', table)
-      evt.preventDefault()
-      evt.stopPropagation()
-    },
     reset() {
       this.parties = this.table.parties.map(
         pid => this.$store.state.parties[pid]
       )
       const guestCount = this.parties.reduce((a, p) => a + p.guests.length, 0)
       this.overloaded = guestCount > 10
+    },
+    save() {
+      this.$store.dispatch('saveTable', this.table)
+      this.editDialog = false
     },
   },
 }
@@ -156,10 +167,34 @@ export default {
   &.overload
     border-color red
 .handle
+  display flex
+  justify-content stretch
+  padding 0 4px
   height 16px
   background-color indigo
+  color white
+  font-weight bold
+  line-height 1
   &.overload
     background-color red
+.number
+  flex none
+  width 20px
+.name
+  flex 1 1 auto
+.edit
+  flex none
+  padding-bottom 2px
+  color white !important
+  font-size 14px
+.dialog
+  display flex
+.ednum
+  flex none
+  width 100px
+.edname
+  flex none
+  width 400px
 .parties
   padding 4px
 </style>
