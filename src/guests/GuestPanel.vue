@@ -85,7 +85,7 @@ v-card(:class="$style.top")
           v-if="!edited.id"
           v-model="edited.ticket"
           :class="$style.ticket"
-          hint="If this guest paid for their ticket, enter details here (e.g. \"Check #2345\")."
+          hint="e.g. \"Check #2345\".  Leave blank if not paid."
           label="Ticket purchase details"
         )
           v-tooltip(
@@ -100,6 +100,14 @@ v-card(:class="$style.top")
             div(style="max-width:400px")
               | A ticket purchase will be added for this guest, so that the deductible amount shows up on their receipt.
               | If you enter payment details here, the purchase will be marked paid, otherwise it will be left unpaid.
+        v-text-field(
+          v-if="!edited.id"
+          :class="$style.numGuests"
+          :value="edited.numGuests"
+          label="Guests"
+          mask="##"
+          @input="edited.numGuests = parseInt($event) || 0"
+        )
       div(:class="$style.row4")
         div(:class="$style.payment")
           div.subheading Default payment method
@@ -210,6 +218,7 @@ const emptyGuest = {
   phone: '',
   requests: '',
   ticket: '',
+  numGuests: 0,
   useCard: false,
   stripeSource: '',
   stripeDescription: '',
@@ -230,6 +239,7 @@ export default {
     cardValid: null,
     edited: Object.assign({}, emptyGuest, { payingFor: [] }),
     hasPayer: false,
+    numGuests: 0,
     original: null,
     payingFor: [],
     payerName: '',
@@ -480,7 +490,13 @@ export default {
   display flex
   align-items flex-end
 .ticket
-  @extend .rhs
+  flex none
+  margin-left 32px
+  width calc(50% - 108px)
+.numGuests
+  flex none
+  margin-left 16px
+  width 60px
 .row4
   display flex
 .payment

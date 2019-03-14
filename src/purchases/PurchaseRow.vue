@@ -64,7 +64,7 @@ export default {
       if (
         await this.$confirm(
           `Are you sure you want to delete the purchase of ${
-          this.itemName
+            this.itemName
           } by ${this.guest.name}?`
         )
       )

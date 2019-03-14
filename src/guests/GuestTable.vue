@@ -115,8 +115,8 @@ export default {
             return a.sortname < b.sortname
               ? -1
               : a.sortname > b.sortname
-                ? +1
-                : 0
+              ? +1
+              : 0
           })
           break
         case 'sortname':
@@ -124,8 +124,8 @@ export default {
             return a.sortname < b.sortname
               ? -1
               : a.sortname > b.sortname
-                ? +1
-                : 0
+              ? +1
+              : 0
           })
           break
       }
