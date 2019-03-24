@@ -4,7 +4,9 @@ GuestList displays the list of guests on the LHS of the Guests tab.
 
 <template lang="pug">
 v-layout(column shrink)
-  div.headline Guests
+  div.headline
+    | Guests{{' '}}
+    span.title(v-text="`(${count})`")
   GuestSearch(v-model="search")
   GuestTable(
     :search="search"
@@ -25,7 +27,16 @@ export default {
     selected: Object,
   },
   data: () => ({
+    count: 0,
     search: '',
   }),
+  watch: {
+    '$store.state.sequence': {
+      immediate: true,
+      handler() {
+        this.count = Object.values(this.$store.state.guests).length
+      },
+    },
+  },
 }
 </script>
