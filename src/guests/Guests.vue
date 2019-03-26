@@ -23,6 +23,10 @@ v-container(fluid fill-height)
         ) Add Guest
         v-btn(
           color="indigo" dark
+          @click="checkinForms"
+        ) Check-In Forms
+        v-btn(
+          color="indigo" dark
           @click="exportPurchases"
         ) Export Purchases
 </template>
@@ -42,6 +46,9 @@ export default {
   methods: {
     addGuest() {
       this.adding = true
+    },
+    checkinForms() {
+      location.href = '/backend/guests/checkin-forms'
     },
     exportPurchases() {
       location.href = '/backend/purchases/export'
