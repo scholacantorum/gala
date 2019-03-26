@@ -7,7 +7,7 @@ v-container(fluid fill-height)
   v-layout(column)
     v-flex(shrink)
       PurchasesTop(
-        @bidder="setBidder"
+        @bidder="bidder = $event"
         @item="item = $event"
       )
     v-flex(:class="$style.bottom")
@@ -56,12 +56,6 @@ export default {
       handler() {
         this.allPurchases = Object.values(this.$store.state.purchases)
       },
-    },
-  },
-  methods: {
-    setBidder(b) {
-      b = parseInt(b, 16)
-      this.bidder = !isNaN(b) && b > 0 ? b : 0
     },
   },
 }
