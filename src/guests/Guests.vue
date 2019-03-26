@@ -16,12 +16,15 @@ v-container(fluid fill-height)
         @done="selected = adding = null"
         @dirty="dirty = $event"
       )
-      v-btn(
-        v-else
-        :class="$style.add"
-        color="indigo" dark
-        @click="addGuest"
-      ) Add Guest
+      div(v-else :class="$style.buttons")
+        v-btn(
+          color="indigo" dark
+          @click="addGuest"
+        ) Add Guest
+        v-btn(
+          color="indigo" dark
+          @click="exportPurchases"
+        ) Export Purchases
 </template>
 
 <script>
@@ -40,6 +43,9 @@ export default {
     addGuest() {
       this.adding = true
     },
+    exportPurchases() {
+      location.href = '/backend/purchases/export'
+    },
     select(g) {
       if (!this.dirty) this.selected = g
     },
@@ -48,8 +54,10 @@ export default {
 </script>
 
 <style lang="stylus" module>
-.add
+.buttons
+  display flex
   flex 1 1 auto
+  flex-direction column
   margin auto 0 auto auto
-  max-width 120px
+  max-width 200px
 </style>
