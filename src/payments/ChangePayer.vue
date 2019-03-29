@@ -56,7 +56,7 @@ export default {
       immediate: true,
       handler() {
         this.possiblePayers = Object.values(this.$store.state.guests)
-          .filter(g => !!g.bidder)
+          .filter(g => !g.payer)
           .sort((a, b) =>
             a.sortname < b.sortname ? -1 : a.sortname > b.sortname ? +1 : 0
           )
