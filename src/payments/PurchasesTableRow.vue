@@ -27,6 +27,8 @@ tr(:class="$style.top")
     span(v-if="purchase.paymentTimestamp")
       v-icon(:class="$style.icon" color="green") check_circle
       | {{ purchase.paymentDescription }}
+  td(:class="$style.paytime")
+    span(v-if="purchase.paymentTimestamp" v-html="timestamp")
 </template>
 
 <script>
@@ -50,6 +52,9 @@ export default {
     },
     sequence() {
       return this.$store.state.sequence
+    },
+    timestamp() {
+      return this.purchase.paymentTimestamp.substr(0, 16).replace('T', ' ')
     },
   },
   watch: {
@@ -90,7 +95,11 @@ export default {
   height auto !important
   text-align right
 .payment
-  padding 4px 16px 4px 0 !important
+  padding 4px 0 !important
+  height auto !important
+  line-height 1
+.paytime
+  padding 4px 16px 4px 8px !important
   height auto !important
   line-height 1
 .icon

@@ -67,6 +67,12 @@ export default {
           sortable: false,
           class: this.$style.paymentTH,
         },
+        {
+          text: '',
+          value: 'paytime',
+          sortable: false,
+          class: this.$style.paytimeTH,
+        },
       ]
     },
   },
@@ -120,7 +126,10 @@ export default {
   padding 8px 16px 8px 0 !important
   text-align right
 .paymentTH
-  padding 8px 16px 8px 0 !important
+  padding 8px 0 !important
   min-width 200px
+.paytimeTH
+  padding 8px 16px 8px 8px !important
+  min-width 100px
   width 100%
 </style>
