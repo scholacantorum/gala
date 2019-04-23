@@ -27,6 +27,10 @@ v-container(fluid fill-height)
         ) Check-In Forms
         v-btn(
           color="indigo" dark
+          @click="programLabels"
+        ) Program Labels
+        v-btn(
+          color="indigo" dark
           @click="exportPurchases"
         ) Export Purchases
 </template>
@@ -49,6 +53,9 @@ export default {
     },
     checkinForms() {
       location.href = '/backend/guests/checkin-forms'
+    },
+    programLabels() {
+      location.href = '/backend/guests/program-labels'
     },
     exportPurchases() {
       location.href = '/backend/purchases/export'
