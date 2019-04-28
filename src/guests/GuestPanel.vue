@@ -257,6 +257,7 @@ export default {
     },
     paymentMethod(n) {
       if (n !== 'new') this.$refs.cardEntry.clear()
+      if (n === 'new') this.$refs.cardEntry.focus()
       if (n !== 'guest') {
         this.edited.payer = 0
         this.payerName = ''
