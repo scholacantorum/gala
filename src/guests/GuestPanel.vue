@@ -186,6 +186,7 @@ v-card(:class="$style.top")
             @drop="dropPayingFor"
           )
     div(:class="$style.buttons")
+      div(:class="$style.error" v-text="error")
       v-btn(
         v-if="dirty"
         :loading="processing"
@@ -238,6 +239,7 @@ export default {
   data: () => ({
     cardValid: null,
     edited: Object.assign({}, emptyGuest, { payingFor: [] }),
+    error: null,
     hasPayer: false,
     numGuests: 0,
     original: null,
@@ -423,19 +425,30 @@ export default {
     },
     async submit() {
       if (this.processing) return
+      this.error = null
       if (!this.$refs.form.validate()) return
       this.processing = true
       this.edited.useCard = this.paymentMethod === 'saved'
       if (this.paymentMethod === 'new')
-        this.edited.cardSource = await this.$refs.cardEntry.getCardSource(
-          this.edited.name,
-          this.edited.email,
-          this.edited.address,
-          this.edited.city,
-          this.edited.state,
-          this.edited.zip
-        )
-      await this.$store.dispatch('saveGuest', this.edited)
+        this.edited.cardSource = await this.$refs.cardEntry
+          .getCardSource(
+            this.edited.name,
+            this.edited.email,
+            this.edited.address,
+            this.edited.city,
+            this.edited.state,
+            this.edited.zip
+          )
+          .catch(err => {
+            this.processing = false
+            this.error = err.toString()
+            throw err
+          })
+      await this.$store.dispatch('saveGuest', this.edited).catch(err => {
+        this.processing = false
+        this.error = err.toString()
+        throw err
+      })
       this.processing = false
       this.original = {} // guarantee no match in reset
       this.reset()
@@ -527,4 +540,9 @@ export default {
 .payingFor
   @extend .rhs
   margin-top 16px
+.error
+  display flex
+  flex 1 1 auto
+  align-items center
+  color red
 </style>

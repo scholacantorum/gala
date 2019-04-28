@@ -101,14 +101,21 @@ export default {
       if (this.which === 'new') {
         if (!this.cardValid) return
         this.processing = true
-        cardSource = await this.$refs.cardEntry.getCardSource(
-          this.payer.name,
-          this.payer.email,
-          this.payer.address,
-          this.payer.city,
-          this.payer.state,
-          this.payer.zip
-        )
+        cardSource = await this.$refs.cardEntry
+          .getCardSource(
+            this.payer.name,
+            this.payer.email,
+            this.payer.address,
+            this.payer.city,
+            this.payer.state,
+            this.payer.zip
+          )
+          .catch(err => {
+            this.processing = false
+            this.$emit('error', err.toString())
+            this.open = false
+            throw err
+          })
         if (!cardSource) return
       } else {
         stripeSource = this.payer.stripeSource
@@ -124,7 +131,6 @@ export default {
         })
         .catch(e => {
           this.$emit('error', e.message)
-          this.error = e.message
         })
       this.open = false
       this.processing = false
