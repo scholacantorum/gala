@@ -33,6 +33,10 @@ v-container(fluid fill-height)
           color="indigo" dark
           @click="exportPurchases"
         ) Export Purchases
+        v-btn(
+          color="indigo" dark
+          @click="renderReceipts"
+        ) Print Receipts
 </template>
 
 <script>
@@ -59,6 +63,9 @@ export default {
     },
     exportPurchases() {
       location.href = '/backend/purchases/export'
+    },
+    renderReceipts() {
+      window.open('/backend/guests/receipts', '_blank')
     },
     select(g) {
       if (!this.dirty) this.selected = g
