@@ -13,26 +13,30 @@ const store = new Vuex.Store({
     items: {},
     purchases: {},
     sequence: 0,
+    authToken: '',
   },
   mutations: {
+    setAuthToken(state, t) {
+      state.authToken = t
+    },
     setState(state, s) {
       state.state = s
     },
     mergeData(state, { seq, data }) {
       state.sequence = seq
-      ;['tables', 'parties', 'guests', 'items', 'purchases'].forEach(t => {
-        if (!data[t]) return
-        for (let tid in data[t]) {
-          if (!data[t][tid]) Vue.delete(state[t], tid)
-          else Vue.set(state[t], tid, data[t][tid])
-        }
-      })
+        ;['tables', 'parties', 'guests', 'items', 'purchases'].forEach(t => {
+          if (!data[t]) return
+          for (let tid in data[t]) {
+            if (!data[t][tid]) Vue.delete(state[t], tid)
+            else Vue.set(state[t], tid, data[t][tid])
+          }
+        })
       if (data.bidderToGuest) state.bidderToGuest = data.bidderToGuest
     },
   },
   actions: {
     async login({ commit, dispatch }, { username, password }) {
-      const response = await fetch('/backend/login', {
+      const response = await fetch(`${process.env.VUE_APP_BACKEND_URL}/login`, {
         method: 'POST',
         body: new URLSearchParams({ username, password }),
       }).catch(e => {
@@ -44,6 +48,7 @@ const store = new Vuex.Store({
       switch (response.status) {
         case 204:
           commit('setState', 'connecting')
+          commit('setAuthToken', response.headers.get('Auth'))
           dispatch('connect')
           return true
         case 401:
@@ -55,7 +60,9 @@ const store = new Vuex.Store({
       }
     },
     async connect({ commit, dispatch }) {
-      const response = await fetch('/backend/ping').catch(e => {
+      const response = await fetch(`${process.env.VUE_APP_BACKEND_URL}/ping`, {
+        headers: { Auth: store.state.authToken },
+      }).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -72,19 +79,9 @@ const store = new Vuex.Store({
           commit('setState', 'failed')
           return
       }
-      const url = new URL('/backend/ws', location.origin)
-      if (url.protocol === 'https:') {
-        // Talking to the real server, and Dreamhost's proxy doesn't forward
-        // websockets.  So we'll skip the proxy and talk directly to our server
-        // on its TLS port.
-        url.protocol = 'wss:'
-        url.port = 9001
-        url.pathname = '/ws'
-      } else {
-        // Talking to localhost in development.  Stay on same non-TLS port.
-        url.protocol = 'ws:'
-      }
-      const ws = new WebSocket(url)
+      const ws = new WebSocket(
+        `${process.env.VUE_APP_WEBSOCKET_URL}?auth=${store.state.authToken}`
+      )
       ws.onopen = () => {
         dispatch('getAll')
       }
@@ -107,10 +104,14 @@ const store = new Vuex.Store({
       }
     },
     async changePayer({ commit }, { payer, purchases }) {
-      const response = await fetch(`/backend/guest/${payer}`, {
-        method: 'PUT',
-        body: JSON.stringify({ payingForPurchasesAdd: purchases }),
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/guest/${payer}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ payingForPurchasesAdd: purchases }),
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -130,9 +131,13 @@ const store = new Vuex.Store({
       }
     },
     async deleteGuest({ commit }, guestID) {
-      const response = await fetch(`/backend/guest/${guestID}`, {
-        method: 'DELETE',
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/guest/${guestID}`,
+        {
+          method: 'DELETE',
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -150,9 +155,13 @@ const store = new Vuex.Store({
       }
     },
     async deleteItem({ commit }, itemID) {
-      const response = await fetch(`/backend/item/${itemID}`, {
-        method: 'DELETE',
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/item/${itemID}`,
+        {
+          method: 'DELETE',
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -170,9 +179,13 @@ const store = new Vuex.Store({
       }
     },
     async deletePurchase({ commit }, purchaseID) {
-      const response = await fetch(`/backend/purchase/${purchaseID}`, {
-        method: 'DELETE',
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/purchase/${purchaseID}`,
+        {
+          method: 'DELETE',
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -190,7 +203,9 @@ const store = new Vuex.Store({
       }
     },
     async getAll({ commit }) {
-      const response = await fetch('/backend/all').catch(e => {
+      const response = await fetch(`${process.env.VUE_APP_BACKEND_URL}/all`, {
+        headers: { Auth: store.state.authToken },
+      }).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -217,10 +232,14 @@ const store = new Vuex.Store({
       commit('setState', 'ok')
     },
     async payForPurchases({ commit }, data) {
-      const response = await fetch('/backend/payments', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/payments`,
+        {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -240,11 +259,14 @@ const store = new Vuex.Store({
       }
     },
     async saveGuest({ commit }, guest) {
-      const url = guest.id ? `/backend/guest/${guest.id}` : '/backend/guests'
+      const url = guest.id
+        ? `${process.env.VUE_APP_BACKEND_URL}/guest/${guest.id}`
+        : `${process.env.VUE_APP_BACKEND_URL}/guests`
       const method = guest.id ? 'PUT' : 'POST'
       const response = await fetch(url, {
         method,
         body: JSON.stringify(guest),
+        headers: { Auth: store.state.authToken },
       }).catch(e => {
         console.error(e)
         commit('setState', 'failed')
@@ -265,11 +287,14 @@ const store = new Vuex.Store({
       }
     },
     async saveItem({ commit }, item) {
-      const url = item.id ? `/backend/item/${item.id}` : '/backend/items'
+      const url = item.id
+        ? `${process.env.VUE_APP_BACKEND_URL}/item/${item.id}`
+        : `${process.env.VUE_APP_BACKEND_URL}/items`
       const method = item.id ? 'PUT' : 'POST'
       const response = await fetch(url, {
         method,
         body: JSON.stringify(item),
+        headers: { Auth: store.state.authToken },
       }).catch(e => {
         console.error(e)
         commit('setState', 'failed')
@@ -290,10 +315,14 @@ const store = new Vuex.Store({
       }
     },
     async saveParty({ commit }, party) {
-      const response = await fetch(`/backend/party/${party.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(party),
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/party/${party.id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify(party),
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -313,10 +342,14 @@ const store = new Vuex.Store({
       }
     },
     async savePositions({ commit }, positions) {
-      const response = await fetch(`/backend/table/reposition`, {
-        method: 'POST',
-        body: JSON.stringify(positions),
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/table/reposition`,
+        {
+          method: 'POST',
+          body: JSON.stringify(positions),
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
@@ -337,12 +370,13 @@ const store = new Vuex.Store({
     },
     async savePurchase({ commit }, purchase) {
       const url = purchase.id
-        ? `/backend/purchase/${purchase.id}`
-        : '/backend/purchases'
+        ? `${process.env.VUE_APP_BACKEND_URL}/purchase/${purchase.id}`
+        : `${process.env.VUE_APP_BACKEND_URL}/purchases`
       const method = purchase.id ? 'PUT' : 'POST'
       const response = await fetch(url, {
         method,
         body: JSON.stringify(purchase),
+        headers: { Auth: store.state.authToken },
       }).catch(e => {
         console.error(e)
         commit('setState', 'failed')
@@ -363,10 +397,14 @@ const store = new Vuex.Store({
       }
     },
     async saveTable({ commit }, table) {
-      const response = await fetch(`/backend/table/${table.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(table),
-      }).catch(e => {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/table/${table.id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify(table),
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
         console.error(e)
         commit('setState', 'failed')
         return null
