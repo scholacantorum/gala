@@ -3,202 +3,151 @@ GuestPanel displays the RHS of the Guests tab.
 -->
 
 <template lang="pug">
-v-card(:class="$style.top")
-  v-form(
-    ref="form"
-    :class="$style.form"
-    @submit.prevent="submit"
-  )
-    div(:class="$style.header")
-      div.headline(v-text="original ? `Guest: ${original.name}` : 'Add Guest'")
-    div(:class="$style.body")
-      div(:class="$style.row")
-        v-text-field(
-          v-model="edited.name"
-          :class="$style.lhs"
-          :rules="nameRules"
-          label="Name"
-        )
+v-card(:class='$style.top')
+  v-form(ref='form', :class='$style.form', @submit.prevent='submit')
+    div(:class='$style.header')
+      .headline(v-text='original ? `Guest: ${original.name}` : "Add Guest"')
+    div(:class='$style.body')
+      div(:class='$style.row')
+        v-text-field(v-model='edited.name', :class='$style.lhs', :rules='nameRules', label='Name')
         v-spacer
-        v-text-field(
-          :class="$style.bidder"
-          :value="bidder"
-          label="Bidder"
-          tabindex="-1"
-          @input="setBidder"
+        v-select(
+          :class='$style.entree',
+          :value='edited.entree',
+          label='Entree',
+          :items='["", "steak", "salmon", "Jambalaya"]'
         )
-      div(:class="$style.row")
-        div(:class="$style.lhs")
+        v-text-field(
+          :class='$style.bidder',
+          :value='bidder',
+          label='Bidder',
+          tabindex='-1',
+          @input='setBidder'
+        )
+      div(:class='$style.row')
+        div(:class='$style.lhs')
           v-text-field(
-            v-model="edited.email"
-            :rules="emailRules"
-            label="Email address"
+            v-model='edited.email',
+            :rules='emailRules',
+            label='Email address',
             validate-on-blur
           )
           v-text-field(
-            v-model="edited.phone"
-            :rules="phoneRules"
-            label="Phone number"
-            mask="(###) ###-####"
-            return-masked-value
+            v-model='edited.phone',
+            :rules='phoneRules',
+            label='Phone number',
+            mask='(###) ###-####',
+            return-masked-value,
             validate-on-blur
           )
-        div(:class="$style.rhs")
+        div(:class='$style.rhs')
           v-text-field(
-            ref="address"
-            v-model="edited.address"
-            :rules="addressRules"
-            label="Mailing address"
+            ref='address',
+            v-model='edited.address',
+            :rules='addressRules',
+            label='Mailing address'
           )
-          div(:class="$style.postal2")
+          div(:class='$style.postal2')
+            v-text-field(ref='city', v-model='edited.city', label='City')
             v-text-field(
-              ref="city"
-              v-model="edited.city"
-              label="City"
-            )
-            v-text-field(
-              ref="state"
-              v-model="edited.state"
-              :class="$style.state"
-              :rules="stateRules"
-              label="State"
-              mask="AA"
+              ref='state',
+              v-model='edited.state',
+              :class='$style.state',
+              :rules='stateRules',
+              label='State',
+              mask='AA',
               validate-on-blur
             )
             v-text-field(
-              ref="zip"
-              v-model="edited.zip"
-              :class="$style.zip"
-              :rules="zipRules"
-              label="ZIP code"
-              mask="#####"
+              ref='zip',
+              v-model='edited.zip',
+              :class='$style.zip',
+              :rules='zipRules',
+              label='ZIP code',
+              mask='#####',
               validate-on-blur
             )
-      div(:class="$style.row3")
-        v-textarea(
-          v-model="edited.requests"
-          auto-grow
-          label="Special requests"
-          rows="1"
-        )
+      div(:class='$style.row3')
+        v-textarea(v-model='edited.requests', auto-grow, label='Special requests', rows='1')
         v-text-field(
-          v-if="!edited.id"
-          v-model="edited.ticket"
-          :class="$style.ticket"
-          hint="e.g. \"Check #2345\".  Leave blank if not paid."
-          label="Ticket purchase details"
+          v-if='!edited.id',
+          v-model='edited.ticket',
+          :class='$style.ticket',
+          hint='e.g. "Check #2345".  Leave blank if not paid.',
+          label='Ticket purchase details'
         )
-          v-tooltip(
-            slot="append"
-            left
-          )
-            template(#activator="data")
-              v-icon(
-                color="blue"
-                v-on="data.on"
-              ) info
-            div(style="max-width:400px")
+          v-tooltip(slot='append', left)
+            template(#activator='data')
+              v-icon(color='blue', v-on='data.on') info
+            div(style='max-width: 400px')
               | A ticket purchase will be added for this guest, so that the deductible amount shows up on their receipt.
               | If you enter payment details here, the purchase will be marked paid, otherwise it will be left unpaid.
         v-text-field(
-          v-if="!edited.id"
-          :class="$style.numGuests"
-          :value="edited.numGuests"
-          label="Guests"
-          mask="##"
-          @input="edited.numGuests = parseInt($event) || 0"
+          v-if='!edited.id',
+          :class='$style.numGuests',
+          :value='edited.numGuests',
+          label='Guests',
+          mask='##',
+          @input='edited.numGuests = parseInt($event) || 0'
         )
-      div(:class="$style.row4")
-        div(:class="$style.payment")
-          div.subheading Default payment method
-          v-radio-group(
-            v-model="paymentMethod"
-            :class="$style.radiogroup"
-          )
-            v-radio(label="None" value="none")
-            v-layout(
-              v-if="edited.stripeDescription"
-              align-start
-            )
-              v-radio(
-                :class="$style.radioExtLabel"
-                value="saved"
-              )
+      div(:class='$style.row4')
+        div(:class='$style.payment')
+          .subheading Default payment method
+          v-radio-group(v-model='paymentMethod', :class='$style.radiogroup')
+            v-radio(label='None', value='none')
+            v-layout(v-if='edited.stripeDescription', align-start)
+              v-radio(:class='$style.radioExtLabel', value='saved')
               v-layout(column)
-                div(
-                  :class="$style.savedCard"
-                ) Saved card: {{ edited.stripeDescription }}
-                div(
-                  v-if="!original.useCard"
-                  :class="$style.permissionWarning"
-                ) Select this only if the guest has given permission.
+                div(:class='$style.savedCard') Saved card: {{ edited.stripeDescription }}
+                div(v-if='!original.useCard', :class='$style.permissionWarning') Select this only if the guest has given permission.
             v-layout(align-start)
-              v-radio(
-                :class="$style.cardEntryRadio"
-                value="new"
-              )
-              CardEntry(
-                ref="cardEntry"
-                @valid="setCardValid"
-              )
-            v-layout(
-              v-if="!this.payingFor.length"
-              align-start
-            )
-              v-radio(
-                :class="$style.radioPayer"
-                label="Guest"
-                value="guest"
-              )
+              v-radio(:class='$style.cardEntryRadio', value='new')
+              CardEntry(ref='cardEntry', @valid='setCardValid')
+            v-layout(v-if='!this.payingFor.length', align-start)
+              v-radio(:class='$style.radioPayer', label='Guest', value='guest')
               v-text-field(
-                v-model="payerName"
-                :class="$style.payer"
-                clearable
-                hide-details
-                placeholder="drag name here"
-                readonly
-                single-line
-                @dragover="dragOver"
-                @drop.prevent="dropGuest"
+                v-model='payerName',
+                :class='$style.payer',
+                clearable,
+                hide-details,
+                placeholder='drag name here',
+                readonly,
+                single-line,
+                @dragover='dragOver',
+                @drop.prevent='dropGuest'
               )
-        div(
-          v-if="!edited.payer"
-          :class="$style.payingFor"
-        )
-          div.subheading Paying for
+        div(v-if='!edited.payer', :class='$style.payingFor')
+          .subheading Paying for
           v-text-field(
-            v-for="pf in payingFor"
-            :key="pf.id"
-            :value="pf.name"
-            clearable
-            hide-details
-            readonly
-            single-line
-            @input="clearPayingFor(pf.id)"
+            v-for='pf in payingFor',
+            :key='pf.id',
+            :value='pf.name',
+            clearable,
+            hide-details,
+            readonly,
+            single-line,
+            @input='clearPayingFor(pf.id)'
           )
           v-text-field(
-            key="0"
-            hide-details
-            placeholder="drag name here"
-            readonly
-            single-line
-            @dragover="dragOver"
-            @drop="dropPayingFor"
+            key='0',
+            hide-details,
+            placeholder='drag name here',
+            readonly,
+            single-line,
+            @dragover='dragOver',
+            @drop='dropPayingFor'
           )
-    div(:class="$style.buttons")
-      div(:class="$style.error" v-text="error")
+    div(:class='$style.buttons')
+      div(:class='$style.error', v-text='error')
       v-btn(
-        v-if="dirty"
-        :loading="processing"
-        color="indigo" dark
-        @click.prevent="submit"
-        v-text="edited.id ? 'Save' : 'Add'"
+        v-if='dirty',
+        :loading='processing',
+        color='indigo',
+        dark,
+        @click.prevent='submit',
+        v-text='edited.id ? "Save" : "Add"'
       )
-      v-btn(
-        :disabled="processing"
-        @click.prevent="cancel"
-        v-text="dirty ? 'Cancel' : 'Close'"
-      )
+      v-btn(:disabled='processing', @click.prevent='cancel', v-text='dirty ? "Cancel" : "Close"')
 </template>
 
 <script>
@@ -209,6 +158,7 @@ const emptyGuest = {
   id: 0,
   name: '',
   sortname: '',
+  entree: '',
   bidder: 0,
   party: 0,
   email: '',
@@ -301,6 +251,7 @@ export default {
     dirty() {
       if (!this.original) return true
       if (this.original.name !== this.edited.name) return true
+      if (this.original.entree !== this.edited.entree) return true
       if (this.original.bidder !== this.edited.bidder) return true
       if (this.original.email !== this.edited.email) return true
       if (this.original.address !== this.edited.address) return true
@@ -365,10 +316,8 @@ export default {
       if (payer.payer) {
         window.alert(
           `${this.edited.name ||
-            'This guest'}'s purchases cannot be charged to ${
-            payer.name
-          } because ${payer.name}'s purchases are already being charged to ${
-            this.$store.state.guests[payer.payer].name
+          'This guest'}'s purchases cannot be charged to ${payer.name
+          } because ${payer.name}'s purchases are already being charged to ${this.$store.state.guests[payer.payer].name
           }.`
         )
         return
@@ -384,10 +333,8 @@ export default {
       payfor = this.$store.state.guests[payfor]
       if (payfor.payingFor.length) {
         window.alert(
-          `${this.edited.name || 'This guest'} cannot pay for ${
-            payfor.name
-          }'s charges because ${payfor.name} is paying for ${
-            this.$store.state.guests[payfor.payingFor[0]].name
+          `${this.edited.name || 'This guest'} cannot pay for ${payfor.name
+          }'s charges because ${payfor.name} is paying for ${this.$store.state.guests[payfor.payingFor[0]].name
           }'s charges.`
         )
         return

@@ -67,7 +67,7 @@
     "devServer": {
       "proxy": {
         "/backend": {
-          "target": "http://localhost:9000",
+          "target": "http://localhost:9002",
           "pathRewrite": {
             "^/backend": ""
           }
