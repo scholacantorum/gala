@@ -378,7 +378,7 @@ export default {
       this.edited.useCard = this.paymentMethod === 'saved'
       if (this.paymentMethod === 'new')
         this.edited.cardSource = await this.$refs.cardEntry
-          .getCardSource(
+          .getPaymentMethod(
             this.edited.name,
             this.edited.email,
             this.edited.address,

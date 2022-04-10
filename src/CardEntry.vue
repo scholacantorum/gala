@@ -17,14 +17,9 @@ even invalid cards aren't caught at this stage.)
 -->
 
 <template lang="pug">
-v-input(
-  ref="input"
-  :class="$style.top"
-  :error-messages="errors"
-  :rules="errors"
-)
-  div(:class="{ [$style.cardEntryWrapper]: true, [$style.cardEntryFocused]: focused }")
-    div(ref="cardEntry" :class="$style.cardEntry")
+v-input(ref='input', :class='$style.top', :error-messages='errors', :rules='errors')
+  div(:class='{ [$style.cardEntryWrapper]: true, [$style.cardEntryFocused]: focused }')
+    div(ref='cardEntry', :class='$style.cardEntry')
 </template>
 
 <script>
@@ -115,9 +110,11 @@ export default {
       this.element.focus()
       this.focused = true
     },
-    async getCardSource(name, email, address, city, state, zip) {
-      const result = await stripe.createSource(this.element, {
-        owner: {
+    async getPaymentMethod(name, email, address, city, state, zip) {
+      const result = await stripe.createPaymentMethod({
+        type: 'card',
+        card: this.element,
+        billing_details: {
           name,
           email,
           address: {
@@ -130,7 +127,7 @@ export default {
         },
       })
       if (result.error) throw new Error(result.error.message)
-      return result.source.id
+      return result.paymentMethod.id
     },
   },
 }
