@@ -12,8 +12,8 @@ v-card(:class='$style.top')
         v-text-field(v-model='edited.name', :class='$style.lhs', :rules='nameRules', label='Name')
         v-spacer
         v-select(
+          v-model='edited.entree',
           :class='$style.entree',
-          :value='edited.entree',
           label='Entree',
           :items='["", "steak", "salmon", "Jambalaya"]'
         )
