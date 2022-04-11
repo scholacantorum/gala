@@ -15,6 +15,7 @@ v-container(fluid, fill-height)
       )
       div(v-else, :class='$style.buttons')
         v-btn(color='indigo', dark, @click='addGuest') Add Guest
+        v-btn(color='indigo', dark, @click='guestList') Guest List
         v-btn(color='indigo', dark, @click='checkinForms') Check-In Forms
         v-btn(color='indigo', dark, @click='programLabels') Program Labels
         v-btn(color='indigo', dark, @click='exportPurchases') Export Purchases
@@ -37,22 +38,21 @@ export default {
     addGuest() {
       this.adding = true
     },
+    guestList() {
+      location.href = `${process.env.VUE_APP_BACKEND_URL}/guests/list?auth=${this.$store.state.authToken}`
+    },
     checkinForms() {
-      location.href = `${process.env.VUE_APP_BACKEND_URL
-        }/guests/checkin-forms?auth=${this.$store.state.authToken}`
+      location.href = `${process.env.VUE_APP_BACKEND_URL}/guests/checkin-forms?auth=${this.$store.state.authToken}`
     },
     programLabels() {
-      location.href = `${process.env.VUE_APP_BACKEND_URL
-        }/guests/program-labels?auth=${this.$store.state.authToken}`
+      location.href = `${process.env.VUE_APP_BACKEND_URL}/guests/program-labels?auth=${this.$store.state.authToken}`
     },
     exportPurchases() {
-      location.href = `${process.env.VUE_APP_BACKEND_URL
-        }/purchases/export?auth=${this.$store.state.authToken}`
+      location.href = `${process.env.VUE_APP_BACKEND_URL}/purchases/export?auth=${this.$store.state.authToken}`
     },
     renderReceipts() {
       window.open(
-        `${process.env.VUE_APP_BACKEND_URL}/guests/receipts?auth=${this.$store.state.authToken
-        }`,
+        `${process.env.VUE_APP_BACKEND_URL}/guests/receipts?auth=${this.$store.state.authToken}`,
         '_blank'
       )
     },
