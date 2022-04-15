@@ -4,51 +4,27 @@ with a credit card other than the one on file for the payer.
 -->
 
 <template lang="pug">
-v-dialog(
-  v-model="open"
-  max-width="600px"
-  persistent
-)
-  v-btn(
-    slot="activator"
-    :disabled="disabled"
-  ) Charge Other Card
-  v-form(ref="form" @submit.prevent="onSubmit")
+v-dialog(v-model='open', max-width='600px', persistent)
+  v-btn(slot='activator', :disabled='disabled') Charge Other Card
+  v-form(ref='form', @submit.prevent='onSubmit')
     v-card
       v-card-title.headline(primary-title) Charge Other Card
       v-card-text
-        v-radio-group(v-model="which" :class="$style.radiogroup")
+        v-radio-group(v-model='which', :class='$style.radiogroup')
           v-layout(column)
-            v-layout(v-if="payer.stripeDescription" :class="$style.savedRow")
-              v-radio(value="saved")
+            v-layout(v-if='payer.stripeDescription', :class='$style.savedRow')
+              v-radio(value='saved')
               div
                 div Card from previous Schola online purchase: {{ payer.stripeDescription }}
-                div(
-                  v-if="payer.useCard"
-                  :class="$style.permission"
-                ) (Approved for use for gala purchases.)
-                div(
-                  v-else
-                  :class="$style.noPermission"
-                ) Select this only if {{ payer.name }} has personally told you to use this card.
+                div(v-if='payer.useCard', :class='$style.permission') (Approved for use for gala purchases.)
+                div(v-else, :class='$style.noPermission') Select this only if {{ payer.name }} has personally told you to use this card.
             v-layout(align-start)
-              v-radio(
-                v-if="payer.stripeDescription"
-                :class="$style.newRadio"
-                value="new"
-              )
-              CardEntry(
-                ref="cardEntry"
-                @valid="cardValid = $event"
-              )
+              v-radio(v-if='payer.stripeDescription', :class='$style.newRadio', value='new')
+              CardEntry(ref='cardEntry', @valid='cardValid = $event')
       v-card-actions
         v-spacer
-        v-btn(
-          :loading="processing"
-          color="indigo" dark
-          @click.prevent="onSubmit"
-        ) Charge Card
-        v-btn(@click.prevent="onCancel") Cancel
+        v-btn(:loading='processing', color='indigo', dark, @click.prevent='onSubmit') Charge Card
+        v-btn(@click.prevent='onCancel') Cancel
 </template>
 
 <script>
@@ -79,7 +55,7 @@ export default {
     },
     open(n) {
       if (n) {
-        this.$nextTick(function() {
+        this.$nextTick(function () {
           this.$refs.cardEntry.focus()
         })
         this.$emit('error', '')
@@ -102,7 +78,7 @@ export default {
         if (!this.cardValid) return
         this.processing = true
         cardSource = await this.$refs.cardEntry
-          .getCardSource(
+          .getPaymentMethod(
             this.payer.name,
             this.payer.email,
             this.payer.address,
@@ -110,7 +86,7 @@ export default {
             this.payer.state,
             this.payer.zip
           )
-          .catch(err => {
+          .catch((err) => {
             this.processing = false
             this.$emit('error', err.toString())
             this.open = false
@@ -124,12 +100,12 @@ export default {
       await this.$store
         .dispatch('payForPurchases', {
           payer: this.payer.id,
-          purchases: this.purchases.map(p => p.id),
+          purchases: this.purchases.map((p) => p.id),
           cardSource,
           stripeSource,
           total: this.total,
         })
-        .catch(e => {
+        .catch((e) => {
           this.$emit('error', e.message)
         })
       this.open = false
