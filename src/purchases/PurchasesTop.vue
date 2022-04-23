@@ -6,50 +6,46 @@ well as to filter the list in the bottom part of the tab.
 <template lang="pug">
 v-card.px-3
   v-layout.justify-center
-    span.headline(:class="$style.headline") Purchases
+    span.headline(:class='$style.headline') Purchases
     v-select(
-      ref="item"
-      v-model="item"
-      :class="$style.item"
-      :items="items"
-      clearable
-      dense
-      item-text="name"
-      item-value="id"
-      label="Item"
+      ref='item',
+      v-model='item',
+      :class='$style.item',
+      :items='items',
+      clearable,
+      dense,
+      item-text='name',
+      item-value='id',
+      label='Item',
       return-object
     )
     v-text-field(
-      ref="bidder"
-      :class="$style.bidder"
-      :error="!!bidderErrors.length"
-      :value="bidderNum"
-      label="Bidder"
-      @input="setBidder"
-      @keyup.enter="addPurchase"
+      ref='bidder',
+      :class='$style.bidder',
+      :error='!!bidderErrors.length',
+      :value='bidderNum',
+      label='Bidder',
+      @input='setBidder',
+      @keyup.enter='addPurchase'
     )
     v-text-field(
-      :class="$style.bidderName"
-      :error-messages="bidderErrors"
-      :value="bidderName"
-      readonly
-      tabindex="-1"
+      :class='$style.bidderName',
+      :error-messages='bidderErrors',
+      :value='bidderName',
+      readonly,
+      tabindex='-1'
     )
     v-text-field(
-      ref="amount"
-      :value="amount?amount/100:''"
-      :class="$style.amount"
-      label="Price"
-      mask="####"
-      prefix="$"
-      @input="setAmount"
-      @keyup.enter="addPurchase"
+      ref='amount',
+      :value='amount ? amount / 100 : ""',
+      :class='$style.amount',
+      label='Price',
+      mask='#####',
+      prefix='$',
+      @input='setAmount',
+      @keyup.enter='addPurchase'
     )
-    v-btn.ml-3(
-      color="indigo"
-      dark
-      @click="addPurchase"
-    ) Add
+    v-btn.ml-3(color='indigo', dark, @click='addPurchase') Add
 </template>
 
 <script>
@@ -165,5 +161,5 @@ export default {
 .amount
   flex none
   margin-left 16px
-  width 80px
+  width 100px
 </style>

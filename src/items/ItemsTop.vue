@@ -6,46 +6,38 @@ ones.
 <template lang="pug">
 v-card.px-3
   v-layout.justify-center
-    span.headline(:class="$style.headline") Item
+    span.headline(:class='$style.headline') Item
     v-text-field(
-      ref="name"
-      v-model="name"
-      :class="$style.name"
-      :error-messages="nameError"
-      label="Name"
-      @input="nameChange"
-      @keyup.enter="addItem"
-    )
-    v-text-field(
-      ref="amount"
-      :value="amount?amount/100:''"
-      :class="$style.amount"
-      label="Price"
-      mask="####"
-      prefix="$"
-      @input="setAmount"
-      @keyup.enter="addItem"
+      ref='name',
+      v-model='name',
+      :class='$style.name',
+      :error-messages='nameError',
+      label='Name',
+      @input='nameChange',
+      @keyup.enter='addItem'
     )
     v-text-field(
-      ref="value"
-      :value="value?value/100:''"
-      :class="$style.value"
-      label="Value"
-      mask="####"
-      prefix="$"
-      @input="setValue"
-      @keyup.enter="addItem"
+      ref='amount',
+      :value='amount ? amount / 100 : ""',
+      :class='$style.amount',
+      label='Price',
+      mask='#####',
+      prefix='$',
+      @input='setAmount',
+      @keyup.enter='addItem'
     )
-    v-btn.ml-3(
-      color="indigo"
-      dark
-      @click="saveItem"
-      v-text="item ? 'Save' : 'Add'"
+    v-text-field(
+      ref='value',
+      :value='value ? value / 100 : ""',
+      :class='$style.value',
+      label='Value',
+      mask='#####',
+      prefix='$',
+      @input='setValue',
+      @keyup.enter='addItem'
     )
-    v-btn(
-      v-if="!!item"
-      @click="$emit('done')"
-    ) Cancel
+    v-btn.ml-3(color='indigo', dark, @click='saveItem', v-text='item ? "Save" : "Add"')
+    v-btn(v-if='!!item', @click='$emit("done")') Cancel
 </template>
 
 <script>
@@ -85,7 +77,7 @@ export default {
     nameChange(n) {
       this.nameError = []
       if (!n) return
-      this.allItems.forEach(i => {
+      this.allItems.forEach((i) => {
         if (this.item && this.item.id === i.id) return
         if (n === i.name) this.nameError = ['Name already in use.']
       })
@@ -130,5 +122,5 @@ export default {
 .amount, .value
   flex none
   margin-left 16px
-  width 80px
+  width 100px
 </style>
