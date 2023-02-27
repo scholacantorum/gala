@@ -15,7 +15,7 @@ v-card(:class='$style.top')
           v-model='edited.entree',
           :class='$style.entree',
           label='Entree',
-          :items='["", "steak", "salmon", "Jambalaya"]'
+          :items='["", "primerib", "salmon", "eggplant"]'
         )
         v-text-field(
           :class='$style.bidder',
@@ -153,7 +153,8 @@ v-card(:class='$style.top')
 <script>
 import CardEntry from '../CardEntry'
 
-const emailRE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+const emailRE =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 const emptyGuest = {
   id: 0,
   name: '',
@@ -273,27 +274,28 @@ export default {
     },
     emailRules() {
       const rules = [
-        v => !v || !!v.match(emailRE) || 'This is not a valid email address.',
+        (v) => !v || !!v.match(emailRE) || 'This is not a valid email address.',
       ]
       if (this.paymentMethod === 'new')
         rules.push(
-          v => !!v || 'An email address is required when adding a credit card.'
+          (v) =>
+            !!v || 'An email address is required when adding a credit card.'
         )
       return rules
     },
-    nameRules: () => [v => !!v || 'Guest name is required.'],
+    nameRules: () => [(v) => !!v || 'Guest name is required.'],
     phoneRules: () => [
-      v =>
+      (v) =>
         !v ||
         v.length === 0 ||
         v.length === 14 ||
         'Phone number is incomplete.',
     ],
     stateRules: () => [
-      v => !v || v.length === 0 || v.length === 2 || 'Invalid',
+      (v) => !v || v.length === 0 || v.length === 2 || 'Invalid',
     ],
     zipRules: () => [
-      v => !v || v.length === 0 || v.length === 5 || 'Invalid ZIP',
+      (v) => !v || v.length === 0 || v.length === 5 || 'Invalid ZIP',
     ],
   },
   methods: {
@@ -303,8 +305,8 @@ export default {
       this.$emit('done')
     },
     clearPayingFor(id) {
-      this.edited.payingFor = this.edited.payingFor.filter(pf => pf !== id)
-      this.payingFor = this.payingFor.filter(pf => pf.id !== id)
+      this.edited.payingFor = this.edited.payingFor.filter((pf) => pf !== id)
+      this.payingFor = this.payingFor.filter((pf) => pf.id !== id)
     },
     dragOver(evt) {
       if (evt.dataTransfer.types.includes('guestid')) evt.preventDefault()
@@ -315,9 +317,9 @@ export default {
       payer = this.$store.state.guests[payer]
       if (payer.payer) {
         window.alert(
-          `${this.edited.name ||
-          'This guest'}'s purchases cannot be charged to ${payer.name
-          } because ${payer.name}'s purchases are already being charged to ${this.$store.state.guests[payer.payer].name
+          `${this.edited.name || 'This guest'
+          }'s purchases cannot be charged to ${payer.name} because ${payer.name
+          }'s purchases are already being charged to ${this.$store.state.guests[payer.payer].name
           }.`
         )
         return
@@ -329,7 +331,7 @@ export default {
     dropPayingFor(evt) {
       let payfor = parseInt(evt.dataTransfer.getData('guestid'))
       if (payfor === this.edited.id) return
-      if (this.edited.payingFor.some(pf => pf === payfor)) return
+      if (this.edited.payingFor.some((pf) => pf === payfor)) return
       payfor = this.$store.state.guests[payfor]
       if (payfor.payingFor.length) {
         window.alert(
@@ -356,7 +358,7 @@ export default {
         else this.paymentMethod = 'none'
       }
       this.payingFor = this.edited.payingFor.map(
-        id => this.$store.state.guests[id]
+        (id) => this.$store.state.guests[id]
       )
       this.payerName = this.edited.payer
         ? this.$store.state.guests[this.edited.payer].name
@@ -386,12 +388,12 @@ export default {
             this.edited.state,
             this.edited.zip
           )
-          .catch(err => {
+          .catch((err) => {
             this.processing = false
             this.error = err.toString()
             throw err
           })
-      await this.$store.dispatch('saveGuest', this.edited).catch(err => {
+      await this.$store.dispatch('saveGuest', this.edited).catch((err) => {
         this.processing = false
         this.error = err.toString()
         throw err
