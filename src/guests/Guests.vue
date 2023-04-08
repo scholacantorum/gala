@@ -19,6 +19,7 @@ v-container(fluid, fill-height)
         v-btn(color='indigo', dark, @click='checkinForms') Check-In Forms
         v-btn(color='indigo', dark, @click='programLabels') Program Labels
         v-btn(color='indigo', dark, @click='exportPurchases') Export Purchases
+        v-btn(color='indigo', dark, @click='auctionWinners') Auction Winners
         v-btn(color='indigo', dark, @click='renderReceipts') Print Receipts
 </template>
 
@@ -49,6 +50,9 @@ export default {
     },
     exportPurchases() {
       location.href = `${process.env.VUE_APP_BACKEND_URL}/purchases/export?auth=${this.$store.state.authToken}`
+    },
+    auctionWinners() {
+      location.href = `${process.env.VUE_APP_BACKEND_URL}/purchases/winners?auth=${this.$store.state.authToken}`
     },
     renderReceipts() {
       window.open(
