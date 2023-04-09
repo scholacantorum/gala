@@ -46,6 +46,12 @@ v-card.px-3
       @keyup.enter='addPurchase'
     )
     v-btn.ml-3(color='indigo', dark, @click='addPurchase') Add
+  v-layout.justify-center
+    span(:class='$style.revenue') Revenue:
+    span(:class='$style.revenue' v-text="`Reg. $${regRevenue}`")
+    span(:class='$style.revenue' v-text="`Auct. $${auctRevenue}`")
+    span(:class='$style.revenue' v-text="`Don. $${donRevenue}`")
+    span(:class='$style.revenue' v-text="`TOTAL $${regRevenue+auctRevenue+donRevenue}`")
 </template>
 
 <script>
@@ -57,6 +63,9 @@ export default {
     bidderGuest: null,
     item: null,
     items: [],
+    regRevenue: 0,
+    auctRevenue: 0,
+    donRevenue: 0,
   }),
   computed: {
     bidderName() {
@@ -77,6 +86,16 @@ export default {
         this.items = Object.values(this.$store.state.items).sort((a, b) =>
           a.name < b.name ? -1 : a.name > b.name ? +1 : 0
         )
+        this.regRevenue = this.auctRevenue = this.donRevenue = 0
+        Object.values(this.$store.state.purchases).forEach(purchase => {
+          console.log(purchase)
+          if (purchase.item <= 2)
+            this.regRevenue += purchase.amount/100
+          else if (this.$store.state.items[purchase.item].value !== 0)
+            this.auctRevenue += purchase.amount/100
+          else
+            this.donRevenue += purchase.amount/100
+        })
         this.calcBidderGuest()
       },
     },
@@ -162,4 +181,9 @@ export default {
   flex none
   margin-left 16px
   width 100px
+.revenue
+  font-size 14px
+  margin-left 32px
+  &:first-child
+    margin-left: 0
 </style>
