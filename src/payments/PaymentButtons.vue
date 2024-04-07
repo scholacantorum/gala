@@ -29,6 +29,12 @@ div(:class="$style.top")
       :purchases="purchases"
       @error="error = $event"
     )
+    PledgePayment(
+      :disabled="!allPayable || chargingCardOnFile"
+      :payer="payer"
+      :purchases="purchases"
+      @error="error = $event"
+    )
     ChangePayer(
       :disabled="!allPayable || chargingCardOnFile"
       :payer="payer"
@@ -42,6 +48,7 @@ import ChangePayer from './ChangePayer'
 import ChargeCardOnFile from './ChargeCardOnFile'
 import ChargeOtherCard from './ChargeOtherCard'
 import NonCardPayment from './NonCardPayment'
+import PledgePayment from './PledgePayment'
 
 export default {
   name: 'PaymentButtons',
@@ -50,6 +57,7 @@ export default {
     ChargeCardOnFile,
     ChargeOtherCard,
     NonCardPayment,
+    PledgePayment,
   },
   props: {
     payer: { type: Object, required: true },

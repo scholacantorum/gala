@@ -27,6 +27,9 @@ tr(:class="$style.top")
     span(v-if="purchase.paymentTimestamp")
       v-icon(:class="$style.icon" color="green") check_circle
       | {{ purchase.paymentDescription }}
+    span(v-else-if="purchase.paymentDescription")
+      v-icon(:class="$style.icon" color="purple") schedule
+      | {{ purchase.paymentDescription }}
   td(:class="$style.paytime")
     span(v-if="purchase.paymentTimestamp" v-html="timestamp")
 </template>

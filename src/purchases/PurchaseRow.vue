@@ -24,10 +24,15 @@ tr(:class="$style.top")
       color="green"
     ) credit_card
     v-icon(
-      v-if="!purchase.paymentTimestamp && !purchase.haveCard"
+      v-if="!purchase.paymentTimestamp && !purchase.haveCard && !purchase.paymentDescription"
       :class="$style.icon"
       color="red"
     ) warning
+    v-icon(
+      v-else-if="!purchase.paymentTimestamp && !purchase.haveCard && purchase.paymentDescription"
+      :class="$style.icon"
+      color="purple"
+    ) schedule
 </template>
 
 <script>
