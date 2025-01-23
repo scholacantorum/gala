@@ -93,7 +93,7 @@ export default {
             this.regRevenue += purchase.amount/100
           else if (this.$store.state.items[purchase.item].value !== 0)
             this.auctRevenue += purchase.amount/100
-          else
+          else if (!purchase.unbid)
             this.donRevenue += purchase.amount/100
         })
         this.calcBidderGuest()

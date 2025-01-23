@@ -89,6 +89,7 @@ export default {
       this.purchases = this.payer.payingForPurchases.map(
         p => this.$store.state.purchases[p]
       )
+      this.purchases = this.purchases.filter(p => !p.unbid)
       if (!this.includePaid)
         this.purchases = this.purchases.filter(p => !p.paymentTimestamp)
       this.$emit(
