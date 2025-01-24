@@ -14,6 +14,7 @@ v-card(:class="$style.top")
         label="Include paid purchases"
       )
     PurchasesTable(v-model="selected" :payer="payer" :includePaid="includePaid")
+    div(v-if="payer.notes" :class="$style.notes" v-text="payer.notes")
     PaymentButtons(:payer="payer" :purchases="selected")
 </template>
 
@@ -65,4 +66,10 @@ export default {
 .includePaid
   flex none
   margin-top 0
+.notes
+  margin-bottom 12px
+  white-space pre-wrap
+.notes::before
+  content 'Payer notes: '
+  font-weight bold
 </style>

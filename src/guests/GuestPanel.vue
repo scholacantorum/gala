@@ -137,6 +137,8 @@ v-card(:class='$style.top')
             @dragover='dragOver',
             @drop='dropPayingFor'
           )
+      div(:class='$style.row5')
+        v-textarea(v-model='edited.notes', auto-grow, label='Notes', rows='1')
     div(:class='$style.buttons')
       div(:class='$style.error', v-text='error')
       v-btn(
@@ -160,6 +162,7 @@ const emptyGuest = {
   name: '',
   sortname: '',
   entree: '',
+  notes: '',
   bidder: 0,
   party: 0,
   email: '',
@@ -253,6 +256,7 @@ export default {
       if (!this.original) return true
       if (this.original.name !== this.edited.name) return true
       if (this.original.entree !== this.edited.entree) return true
+      if (this.original.notes !== this.edited.notes) return true
       if (this.original.bidder !== this.edited.bidder) return true
       if (this.original.email !== this.edited.email) return true
       if (this.original.address !== this.edited.address) return true
@@ -461,6 +465,8 @@ export default {
   margin-left 16px
   width 60px
 .row4
+  display flex
+.row5
   display flex
 .payment
   @extend .lhs

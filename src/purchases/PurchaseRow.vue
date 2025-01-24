@@ -3,7 +3,7 @@ PurchaseRow displays one row in the purchase table.
 -->
 
 <template lang="pug">
-tr(:class="$style.top")
+tr(:class="[$style.top, purchase.unbid ? $style.unbid : null]")
   td(:class="$style.item" v-text="itemName")
   td(:class="$style.bidder" v-text="bidder")
   td(:class="$style.name" v-text="guest.name")
@@ -88,6 +88,8 @@ export default {
 <style lang="stylus" module>
 .top
   border-bottom 1px solid rgba(0, 0, 0, 0.12)
+.unbid
+  color: #888;
 $td
   padding-right 24px
   font-size 14px
