@@ -215,6 +215,13 @@ export default {
       if (n !== 'new') this.$refs.cardEntry.clear()
       if (n === 'new') this.$refs.cardEntry.focus()
       if (n !== 'guest') {
+        if (this.edited.payer) {
+          const formerPayer = this.$store.state.guests[this.edited.payer]
+          if (formerPayer.payingFor.length <= 1) {
+            this.edited.payingFor.push(this.edited.payer)
+            this.payingFor.push(formerPayer)
+          }
+        }
         this.edited.payer = 0
         this.payerName = ''
       }
