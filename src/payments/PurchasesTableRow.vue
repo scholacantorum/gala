@@ -11,10 +11,12 @@ tr(:class="$style.top")
       primary hide-details
       @change="$emit('select')"
     )
-  td(
-    :class="$style.item"
-    v-text="itemName"
-  )
+  td(:class="$style.item")
+    span(v-text="itemName")
+    div(
+      v-if="purchase.paymentTimestamp && !purchase.pickedUp"
+      :class="$style.needsPickup"
+    ) Not Picked Up
   td(
     :class="$style.bidder"
     v-text="bidderLabel"
@@ -90,6 +92,8 @@ export default {
 .item
   padding 4px 16px 4px 0 !important
   height auto !important
+.needsPickup
+  color red
 .bidder
   padding 4px 16px 4px 0 !important
   height auto !important

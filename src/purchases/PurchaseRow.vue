@@ -33,6 +33,14 @@ tr(:class="[$style.top, purchase.unbid ? $style.unbid : null]")
       :class="$style.icon"
       color="purple"
     ) schedule
+    v-btn(
+      v-if="purchase.paymentTimestamp && !purchase.pickedUp"
+      :class="$style.pickup"
+      color="#f0f"
+      flat icon
+      @click="pickupPurchase"
+    )
+      v-icon(style="font-size:20px") open_in_browser
 </template>
 
 <script>
@@ -74,6 +82,9 @@ export default {
         )
       )
         this.$store.dispatch('deletePurchase', this.purchase.id)
+    },
+    pickupPurchase() {
+      this.$store.dispatch('pickupPurchase', this.purchase.id)
     },
     reset() {
       if (!this.purchase) return
@@ -120,6 +131,10 @@ $td
   @extend $td
   padding-right 8px
 .delete
+  margin 0
+  width 24px
+  height 24px
+.pickup
   margin 0
   width 24px
   height 24px

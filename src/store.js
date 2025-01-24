@@ -258,6 +258,30 @@ const store = new Vuex.Store({
           commit('setState', 'failed')
       }
     },
+    async pickupPurchase({ commit }, purchaseID) {
+      const response = await fetch(
+        `${process.env.VUE_APP_BACKEND_URL}/purchase/${purchaseID}/pickup`,
+        {
+          method: 'POST',
+          headers: { Auth: store.state.authToken },
+        }
+      ).catch(e => {
+        console.error(e)
+        commit('setState', 'failed')
+        return null
+      })
+      if (!response) return
+      switch (response.status) {
+        case 204:
+          break
+        case 401:
+          commit('setState', 'notLoggedIn')
+          break
+        default:
+          console.error(response.statusText)
+          commit('setState', 'failed')
+      }
+    },
     async saveGuest({ commit }, guest) {
       const url = guest.id
         ? `${process.env.VUE_APP_BACKEND_URL}/guest/${guest.id}`

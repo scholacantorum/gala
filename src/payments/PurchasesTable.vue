@@ -91,7 +91,7 @@ export default {
       )
       this.purchases = this.purchases.filter(p => !p.unbid)
       if (!this.includePaid)
-        this.purchases = this.purchases.filter(p => !p.paymentTimestamp)
+        this.purchases = this.purchases.filter(p => !p.paymentTimestamp || !p.pickedUp)
       this.$emit(
         'select',
         this.selected.filter(p => this.purchases.includes(p))
