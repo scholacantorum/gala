@@ -13,19 +13,19 @@ v-container(fluid fill-height)
     v-flex(:class="$style.bottom")
       v-card(:class="$style.card")
         div(:class="$style.tableScroll")
-          table(:class="$style.table")
-            thead
-              tr(:class="$style.heading")
-                th(:class="$style.itemTH") Item
-                th(:class="$style.bidderTH" colspan="2") Bidder
-                th(:class="$style.priceTH") Price
-                th(:class="$style.payerTH") Payer
-                th(:class="$style.actionsTH")
-            tbody
+          v-data-table(
+            :class="$style.table"
+            :custom-sort="sort"
+            :headers="headers"
+            :items="filteredPurchases"
+            :pagination="pagination"
+            hide-actions must-sort
+            @update:pagination="pagination=$event"
+          )
+            template(slot="items" slot-scope="props")
               PurchaseRow(
-                v-for="purchase, idx in filteredPurchases"
-                :key="purchase.id"
-                :purchase="purchase"
+                :key="props.item.id"
+                :purchase="props.item"
               )
 </template>
 
@@ -40,8 +40,57 @@ export default {
     allPurchases: [],
     bidder: 0,
     item: null,
+    pagination: {
+      sortBy: 'id',
+      descending: false,
+      page: 1,
+      rowsPerPage: 1000,
+      totalItems: 1000,
+    },
   }),
   computed: {
+    headers() {
+      return [
+        {
+          text: 'Item',
+          value: 'item',
+          sortable: true,
+          class: this.$style.itemTH,
+        },
+        {
+          text: '#',
+          align: 'right',
+          value: 'bidnum',
+          sortable: true,
+          class: this.$style.bidderNumTH,
+        },
+        {
+          text: 'Bidder',
+          value: 'bidder',
+          sortable: true,
+          class: this.$style.bidderTH,
+        },
+        {
+          text: 'Price',
+          align: 'right',
+          value: 'price',
+          sortable: true,
+          class: this.$style.priceTH,
+        },
+        {
+          text: 'Payer',
+          value: 'payer',
+          sortable: true,
+          class: this.$style.payerTH,
+        },
+        {
+          text: '',
+          value: 'actions',
+          sortable: false,
+          class: this.$style.actionsTH,
+        },
+      ]
+    },
     filteredPurchases() {
       return this.allPurchases.filter(p => {
         if (this.item && this.item.id !== p.item) return false
@@ -56,6 +105,48 @@ export default {
       handler() {
         this.allPurchases = Object.values(this.$store.state.purchases)
       },
+    },
+  },
+  methods: {
+    sort(purchases, column, desc) {
+      let sorted = purchases
+      switch (column) {
+        case 'item':
+          sorted = purchases.sort((a, b) => {
+            const an = this.$store.state.items[a.item].name
+            const bn = this.$store.state.items[b.item].name
+            return an < bn ? -1 : an > bn ? 1 : 0
+          })
+          break
+        case 'bidnum':
+          sorted = purchases.sort((a, b) => {
+            const ab = this.$store.state.guests[a.guest].bidder
+            const bb = this.$store.state.guests[b.guest].bidder
+            return ab - bb
+          })
+          break
+        case 'bidder':
+          sorted = purchases.sort((a, b) => {
+            const an = this.$store.state.guests[a.guest].sortname
+            const bn = this.$store.state.guests[b.guest].sortname
+            return an < bn ? -1 : an > bn ? 1 : 0
+          })
+          break
+        case 'price':
+          sorted = purchases.sort((a, b) => {
+            return a.amount - b.amount
+          })
+          break
+        case 'payer':
+          sorted = purchases.sort((a, b) => {
+            const an = this.$store.state.guests[a.payer].sortname
+            const bn = this.$store.state.guests[b.payer].sortname
+            return an < bn ? -1 : an > bn ? 1 : 0
+          })
+          break
+      }
+      if (desc) sorted = sorted.reverse()
+      return sorted
     },
   },
 }
@@ -76,6 +167,8 @@ export default {
 .table
   margin 0 auto
   border-collapse collapse
+.table tbody th, .table tbody td
+  height: auto
 .heading
   height 40px
   border-bottom 1px solid #808080
@@ -92,6 +185,10 @@ $th
   padding-left 8px
   min-width 160px
   text-align left
+.bidderNumTH
+  @extend $th
+  min-width 40px
+  text-align right
 .bidderTH
   @extend $th
   min-width 200px
