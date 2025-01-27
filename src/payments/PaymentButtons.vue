@@ -11,14 +11,14 @@ div(:class="$style.top")
   )
   div(:class="$style.buttons")
     ChargeCardOnFile(
-      :disabled="!allPayable || chargingCardOnFile"
+      :disabled="!allPayable || chargingCardOnFile || !payer.email"
       :payer="payer"
       :purchases="purchases"
       @error="error = $event"
       @processing="chargingCardOnFile = $event"
     )
     ChargeOtherCard(
-      :disabled="!allPayable || chargingCardOnFile"
+      :disabled="!allPayable || chargingCardOnFile || !payer.email"
       :payer="payer"
       :purchases="purchases"
       @error="error = $event"
