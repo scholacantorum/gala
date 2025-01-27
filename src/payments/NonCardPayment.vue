@@ -26,6 +26,10 @@ v-dialog(
           autofocus persistent-hint
         )
         // The v-if above is required so that autofocus works every time.
+        v-switch(
+          v-model="thirdParty"
+          label="Third party payment (e.g., donor advised fund)"
+        )
       v-card-actions
         v-spacer
         v-btn(
@@ -48,6 +52,7 @@ export default {
     processing: false,
     open: false,
     paymentDescription: '',
+    thirdParty: false,
   }),
   computed: {
     total() {
@@ -72,6 +77,7 @@ export default {
           payer: this.payer.id,
           purchases: this.purchases.map(p => p.id),
           otherMethod: this.paymentDescription,
+          thirdParty: this.thirdParty,
           total: this.total,
         })
         .catch(e => {

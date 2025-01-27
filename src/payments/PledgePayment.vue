@@ -24,6 +24,10 @@ v-dialog(
           autofocus
         )
         // The v-if above is required so that autofocus works every time.
+        v-switch(
+          v-model="thirdParty"
+          label="Third party payment (e.g., donor advised fund)"
+        )
       v-card-actions
         v-spacer
         v-btn(
@@ -46,6 +50,7 @@ export default {
     processing: false,
     open: false,
     paymentDescription: '',
+    thirdParty: false,
   }),
   computed: {
     total() {
@@ -56,6 +61,7 @@ export default {
     open(n) {
       if (n) this.$emit('error', '')
       this.paymentDescription = this.purchases[0].paymentDescription
+      this.thirdParty = this.purchases[0].thirdParty
       this.purchases.forEach(p => {
         if (p.paymentDescription !== this.paymentDescription) this.paymentDescription = ''
       })
@@ -74,6 +80,7 @@ export default {
           payer: this.payer.id,
           purchases: this.purchases.map(p => p.id),
           pledgeMethod: this.paymentDescription,
+          thirdParty: this.thirdParty,
           total: this.total,
         })
         .catch(e => {
