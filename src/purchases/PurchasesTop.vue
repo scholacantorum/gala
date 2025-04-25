@@ -133,11 +133,6 @@ export default {
         guest: this.bidderGuest.id,
         amount: this.amount,
       })
-      if (this.item.value && this.item.id !== 1) {
-        const idx = this.items.indexOf(this.item)
-        if (idx >= 0 && idx < this.items.length-1)
-          this.item = this.items[idx+1]
-      }
       this.bidder = ''
       this.amount = this.item.amount
       this.$refs.bidder.focus()
