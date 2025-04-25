@@ -15,7 +15,7 @@ v-card(:class='$style.top')
           v-model='edited.entree',
           :class='$style.entree',
           label='Entree',
-          :items='["", "filet", "bass", "gnocchi"]'
+          :items='["", "filet", "salmon", "vegan"]'
         )
         v-text-field(
           :class='$style.bidder',
